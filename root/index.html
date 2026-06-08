@@ -1,840 +1,984 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BankCore MLOps — Azure Banking Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body, .readme-root {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
-    color: var(--color-text-primary);
-    line-height: 1.7;
+  :root {
+    --bg: #0b0f1a;
+    --bg2: #111827;
+    --bg3: #1a2234;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f4ff;
+    --text2: #8b9ab8;
+    --text3: #4e5f7a;
+    --blue: #3b82f6;
+    --blue-dim: rgba(59,130,246,0.12);
+    --teal: #14b8a6;
+    --teal-dim: rgba(20,184,166,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --coral: #f97316;
+    --coral-dim: rgba(249,115,22,0.12);
+    --purple: #8b5cf6;
+    --purple-dim: rgba(139,92,246,0.12);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.12);
   }
 
-  .readme-root { padding: 0 0 3rem; }
+  html { scroll-behavior: smooth; }
 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(11,15,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .nav-links {
+    display: flex; gap: 1.5rem; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px; color: var(--text2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
   .hero {
-    background: var(--color-background-secondary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
-    padding: 2.5rem 2rem 2rem;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
+    padding: 140px 2rem 80px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
   }
 
   .hero-eyebrow {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.75rem;
+    color: var(--teal);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
   }
 
   .hero-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 28px;
+    font-size: clamp(36px, 6vw, 64px);
     font-weight: 400;
-    line-height: 1.2;
-    margin-bottom: 0.75rem;
-    color: var(--color-text-primary);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
   }
 
   .hero-title em {
     font-style: italic;
-    color: var(--color-text-secondary);
+    color: var(--text2);
   }
 
   .hero-desc {
-    font-size: 15px;
-    color: var(--color-text-secondary);
-    max-width: 600px;
-    margin-bottom: 1.5rem;
-    line-height: 1.65;
+    font-size: 17px;
+    color: var(--text2);
+    max-width: 620px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
   }
 
-  .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hero-badges {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.45s;
+  }
 
   .badge {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 4px;
-    border: 0.5px solid var(--color-border-tertiary);
-    color: var(--color-text-secondary);
-    background: var(--color-background-primary);
+    border: 0.5px solid var(--border2);
+    color: var(--text2);
+    background: var(--bg2);
   }
 
-  .badge.blue { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
-  .badge.teal { background: #E1F5EE; color: #085041; border-color: #5DCAA5; }
-  .badge.amber { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
-  .badge.purple { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
-  .badge.coral { background: #FAECE7; color: #712B13; border-color: #F0997B; }
+  .badge.blue { border-color: rgba(59,130,246,0.4); color: #93c5fd; background: var(--blue-dim); }
+  .badge.teal { border-color: rgba(20,184,166,0.4); color: #5eead4; background: var(--teal-dim); }
+  .badge.amber { border-color: rgba(245,158,11,0.4); color: #fcd34d; background: var(--amber-dim); }
+  .badge.purple { border-color: rgba(139,92,246,0.4); color: #c4b5fd; background: var(--purple-dim); }
+  .badge.coral { border-color: rgba(249,115,22,0.4); color: #fdba74; background: var(--coral-dim); }
 
-  h2.section-heading {
+  .hero-cta {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.55s;
+  }
+
+  .btn-primary {
+    padding: 10px 24px;
+    background: var(--blue);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px; font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  .btn-secondary {
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--text2);
+    border: 0.5px solid var(--border2);
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STAT BAR */
+  .stat-bar {
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg2);
+    padding: 1.5rem 2rem;
+    display: flex; justify-content: center; gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    padding: 0.5rem 2.5rem;
+    text-align: center;
+    border-right: 0.5px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
     font-family: 'DM Serif Display', serif;
-    font-size: 20px;
-    font-weight: 400;
-    margin: 2.5rem 0 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    color: var(--color-text-primary);
+    font-size: 28px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
   }
 
-  h3.sub-heading {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin: 1.25rem 0 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-
-  .overview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 1.5rem;
-  }
-
-  .overview-card {
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
-    padding: 1rem 1.25rem;
-  }
-
-  .overview-card .icon {
-    font-size: 20px;
-    color: var(--color-text-secondary);
-    margin-bottom: 8px;
-  }
-
-  .overview-card .label {
+  .stat-label {
     font-size: 12px;
-    color: var(--color-text-secondary);
-    margin-bottom: 4px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
   }
 
-  .overview-card .value {
+  /* SECTIONS */
+  .section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .section-desc {
     font-size: 15px;
-    font-weight: 500;
-    color: var(--color-text-primary);
+    color: var(--text2);
+    max-width: 580px;
+    margin-bottom: 3rem;
+    line-height: 1.75;
   }
 
-  .arch-block {
-    background: var(--color-background-secondary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
+  /* ARCH */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 1.5rem;
   }
 
-  .arch-layer {
-    padding: 1rem 1.25rem;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
+  .arch-card {
+    background: var(--bg2);
+    padding: 1.5rem;
+    transition: background 0.2s;
   }
-  .arch-layer:last-child { border-bottom: none; }
+  .arch-card:hover { background: var(--bg3); }
 
-  .arch-layer-icon {
-    width: 36px;
-    height: 36px;
+  .arch-icon {
+    width: 40px; height: 40px;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 1rem;
   }
 
-  .arch-layer-icon.blue { background: #E6F1FB; color: #0C447C; }
-  .arch-layer-icon.teal { background: #E1F5EE; color: #085041; }
-  .arch-layer-icon.amber { background: #FAEEDA; color: #633806; }
-  .arch-layer-icon.purple { background: #EEEDFE; color: #3C3489; }
-  .arch-layer-icon.coral { background: #FAECE7; color: #712B13; }
-  .arch-layer-icon.green { background: #EAF3DE; color: #27500A; }
+  .arch-icon.blue { background: var(--blue-dim); }
+  .arch-icon.teal { background: var(--teal-dim); }
+  .arch-icon.amber { background: var(--amber-dim); }
+  .arch-icon.purple { background: var(--purple-dim); }
+  .arch-icon.coral { background: var(--coral-dim); }
+  .arch-icon.green { background: var(--green-dim); }
 
-  .arch-layer-content { flex: 1; }
-
-  .arch-layer-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: var(--color-text-primary);
+  .arch-title {
+    font-size: 14px; font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--text);
   }
 
-  .arch-layer-desc {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+  .arch-desc {
+    font-size: 13px; color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 12px;
   }
 
-  .arch-layer-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .arch-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
   .tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-secondary);
-    color: var(--color-text-secondary);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid var(--border2);
+    color: var(--text3);
   }
 
-  .code-block {
-    background: var(--color-background-secondary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    padding: 1rem 1.25rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    line-height: 1.75;
-    color: var(--color-text-secondary);
-    overflow-x: auto;
-    margin: 0.75rem 0;
-    white-space: pre;
-  }
-
-  .code-block .kw { color: #185FA5; }
-  .code-block .str { color: #0F6E56; }
-  .code-block .cm { color: var(--color-text-tertiary); }
-  .code-block .fn { color: #993C1D; }
-
+  /* AI CARDS */
   .ai-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 12px;
-    margin-bottom: 1.5rem;
   }
 
   .ai-card {
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
-    padding: 1.25rem;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .ai-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .ai-card-icon {
+    font-size: 24px; margin-bottom: 12px;
   }
 
-  .ai-card .ai-icon {
-    font-size: 22px;
-    margin-bottom: 10px;
-    color: var(--color-text-secondary);
+  .ai-card-title {
+    font-size: 15px; font-weight: 500;
+    margin-bottom: 8px; color: var(--text);
   }
 
-  .ai-card .ai-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: var(--color-text-primary);
+  .ai-card-desc {
+    font-size: 13px; color: var(--text2);
+    line-height: 1.65; margin-bottom: 14px;
   }
 
-  .ai-card .ai-desc {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-
-  .ai-card .ai-metric {
-    margin-top: 10px;
+  .ai-metric {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    padding: 3px 8px;
+    padding: 3px 10px;
     border-radius: 4px;
     display: inline-block;
   }
 
-  .ai-metric.teal { background: #E1F5EE; color: #085041; }
-  .ai-metric.blue { background: #E6F1FB; color: #0C447C; }
-  .ai-metric.amber { background: #FAEEDA; color: #633806; }
-  .ai-metric.coral { background: #FAECE7; color: #712B13; }
-  .ai-metric.purple { background: #EEEDFE; color: #3C3489; }
+  .ai-metric.teal { background: var(--teal-dim); color: #5eead4; }
+  .ai-metric.blue { background: var(--blue-dim); color: #93c5fd; }
+  .ai-metric.amber { background: var(--amber-dim); color: #fcd34d; }
+  .ai-metric.coral { background: var(--coral-dim); color: #fdba74; }
+  .ai-metric.purple { background: var(--purple-dim); color: #c4b5fd; }
+  .ai-metric.green { background: var(--green-dim); color: #86efac; }
 
-  .pipeline-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
+  /* PIPELINE */
+  .pipeline {
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 1.5rem;
   }
 
   .pipeline-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    background: var(--color-background-primary);
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg2);
+    transition: background 0.2s;
   }
   .pipeline-step:last-child { border-bottom: none; }
+  .pipeline-step:hover { background: var(--bg3); }
 
   .step-num {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    font-weight: 500;
-    min-width: 24px;
-    height: 24px;
+    width: 26px; height: 26px;
     border-radius: 50%;
-    background: var(--color-background-secondary);
-    border: 0.5px solid var(--color-border-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-secondary);
-    flex-shrink: 0;
-    margin-top: 2px;
+    border: 0.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text3);
+    flex-shrink: 0; margin-top: 2px;
   }
 
-  .step-content .step-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: var(--color-text-primary);
+  .step-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+  .step-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* ENDPOINTS */
+  .endpoint-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
   }
 
-  .step-content .step-desc {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
+  .endpoint-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .endpoint-card:hover { border-color: var(--border2); }
+
+  .ep-method {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    padding: 2px 7px; border-radius: 3px;
+  }
+  .ep-get { background: var(--green-dim); color: #86efac; }
+  .ep-post { background: var(--blue-dim); color: #93c5fd; }
+
+  .ep-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--text);
+    margin: 8px 0 4px;
   }
 
+  .ep-desc { font-size: 12px; color: var(--text2); }
+
+  /* STACK TABLE */
   .stack-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
-    margin-bottom: 1.5rem;
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
     overflow: hidden;
   }
 
   .stack-table th {
-    font-size: 11px;
-    font-weight: 500;
-    text-align: left;
-    padding: 8px 12px;
-    background: var(--color-background-secondary);
-    color: var(--color-text-secondary);
-    border-bottom: 0.5px solid var(--color-border-tertiary);
     font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.06em;
+    font-size: 10px;
     text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 14px;
+    background: var(--bg3);
+    color: var(--text3);
+    text-align: left;
+    border-bottom: 0.5px solid var(--border);
   }
 
   .stack-table td {
-    padding: 8px 12px;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    color: var(--color-text-primary);
+    padding: 10px 14px;
+    border-bottom: 0.5px solid var(--border);
+    color: var(--text2);
     vertical-align: top;
   }
 
   .stack-table tr:last-child td { border-bottom: none; }
-  .stack-table tr:nth-child(even) td { background: var(--color-background-secondary); }
+  .stack-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .stack-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+  .stack-table td:nth-child(2) { color: var(--text); }
 
-  .stack-table .layer-label {
+  /* CODE */
+  .code-block {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--color-text-secondary);
-  }
-
-  .info-box {
-    border-left: 3px solid #378ADD;
-    padding: 0.75rem 1rem;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text2);
+    overflow-x: auto;
+    white-space: pre;
     margin: 1rem 0;
-    background: var(--color-background-secondary);
-    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    line-height: 1.65;
   }
+  .kw { color: #93c5fd; }
+  .str { color: #86efac; }
+  .cm { color: var(--text3); }
+  .fn { color: #fdba74; }
 
-  .info-box.amber-box { border-left-color: #EF9F27; }
-  .info-box.teal-box { border-left-color: #1D9E75; }
-
+  /* SECURITY */
   .security-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-
-  .security-item {
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    padding: 0.75rem 1rem;
-    font-size: 13px;
-  }
-
-  .security-item .s-role {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-    margin-bottom: 4px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .security-item .s-name {
-    font-weight: 500;
-    color: var(--color-text-primary);
-    margin-bottom: 4px;
-  }
-
-  .security-item .s-access {
-    font-size: 11px;
-    color: var(--color-text-tertiary);
-  }
-
-  .divider {
-    height: 0.5px;
-    background: var(--color-border-tertiary);
-    margin: 2rem 0;
-  }
-
-  .footer-note {
-    font-size: 13px;
-    color: var(--color-text-tertiary);
-    text-align: center;
-    padding-top: 1rem;
-    font-style: italic;
-    font-family: 'DM Serif Display', serif;
-  }
-
-  .endpoint-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
-    margin-bottom: 1rem;
   }
 
-  .endpoint-card {
-    background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-md);
-    padding: 0.75rem 1rem;
+  .security-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
   }
 
-  .endpoint-method {
+  .sec-from { font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+  .sec-to { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .sec-role { font-size: 11px; color: var(--text2); }
+
+  /* INFO BOX */
+  .info-box {
+    border-left: 3px solid var(--blue);
+    padding: 1rem 1.25rem;
+    background: rgba(59,130,246,0.06);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin: 1.5rem 0;
+  }
+  .info-box.amber { border-left-color: var(--amber); background: rgba(245,158,11,0.06); }
+  .info-box.teal { border-left-color: var(--teal); background: rgba(20,184,166,0.06); }
+
+  .info-box strong { color: var(--text); font-weight: 500; }
+
+  /* DIVIDER */
+  .divider { height: 0.5px; background: var(--border); }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+  }
+
+  /* GETTING STARTED */
+  .steps-inline { display: flex; flex-direction: column; gap: 0; }
+
+  .start-step {
+    display: flex; gap: 1.25rem; align-items: flex-start;
+    padding: 1.25rem 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .start-step:last-child { border-bottom: none; }
+
+  .start-num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 3px;
-    margin-right: 6px;
+    font-size: 12px; color: var(--blue);
+    min-width: 28px; margin-top: 2px;
   }
 
-  .method-get { background: #EAF3DE; color: #27500A; }
-  .method-post { background: #E6F1FB; color: #0C447C; }
-  .method-del { background: #FCEBEB; color: #791F1F; }
+  .start-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+  .start-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
 
-  .endpoint-path {
+  /* MONITORING TABLE */
+  .mon-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .mon-table th {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--color-text-primary);
-    margin-top: 6px;
-    margin-bottom: 4px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    padding: 10px 14px; background: var(--bg3);
+    color: var(--text3); text-align: left;
+    border-bottom: 0.5px solid var(--border);
   }
 
-  .endpoint-desc {
-    font-size: 12px;
-    color: var(--color-text-secondary);
+  .mon-table td {
+    padding: 10px 14px;
+    border-bottom: 0.5px solid var(--border);
+    color: var(--text2);
+  }
+  .mon-table tr:last-child td { border-bottom: none; }
+  .mon-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .alert-warn { color: #fcd34d; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .alert-crit { color: #fca5a5; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .alert-info { color: #93c5fd; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  @media (max-width: 640px) {
+    .stat-item { padding: 0.5rem 1.25rem; border-right: none; border-bottom: 0.5px solid var(--border); }
+    .nav-links { display: none; }
   }
 </style>
+</head>
+<body>
 
-<div class="readme-root">
-  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">BankCore MLOps — Azure End-to-End Banking AI Platform README</h2>
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <span class="nav-dot"></span>
+    BankCore MLOps
+  </a>
+  <ul class="nav-links">
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#ai">AI Modules</a></li>
+    <li><a href="#pipeline">CI/CD</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="#start">Get Started</a></li>
+    <li><a href="https://github.com/2209aditya/MLOps-Project-Azure-End-to-End-Machine-Learning-Pipeline" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
 
-  <!-- HERO -->
-  <div class="hero">
-    <p class="hero-eyebrow">🏦  MLOps · Azure · AI · Banking</p>
-    <h1 class="hero-title">BankCore MLOps<br><em>Azure End-to-End Banking Intelligence Platform</em></h1>
-    <p class="hero-desc">A production-grade MLOps platform purpose-built for banking — covering customer intelligence, transaction risk, fraud detection, and regulatory compliance. Built on Azure-native services with enterprise security, auditability, and real-time AI at its core.</p>
-    <div class="badge-row">
-      <span class="badge blue">Python 3.11</span>
-      <span class="badge blue">Azure ML</span>
-      <span class="badge blue">AKS</span>
-      <span class="badge teal">FastAPI</span>
-      <span class="badge teal">MLflow</span>
-      <span class="badge amber">Azure DevOps CI/CD</span>
-      <span class="badge purple">Azure Key Vault</span>
-      <span class="badge coral">ADLS Gen2</span>
-      <span class="badge">MIT License</span>
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">🏦 &nbsp; MLOps · Azure · AI · Banking</p>
+  <h1 class="hero-title">BankCore MLOps<br><em>Azure Banking Intelligence Platform</em></h1>
+  <p class="hero-desc">A production-grade MLOps platform purpose-built for banking — real-time fraud detection, credit risk scoring, customer intelligence, and regulatory compliance. Built on Azure-native services with enterprise security and AI at its core.</p>
+  <div class="hero-badges">
+    <span class="badge blue">Python 3.11</span>
+    <span class="badge blue">Azure ML</span>
+    <span class="badge blue">AKS</span>
+    <span class="badge teal">FastAPI</span>
+    <span class="badge teal">MLflow</span>
+    <span class="badge amber">Azure DevOps</span>
+    <span class="badge purple">Key Vault</span>
+    <span class="badge coral">ADLS Gen2</span>
+    <span class="badge">MIT License</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#start" class="btn-primary">Get Started</a>
+    <a href="https://github.com/2209aditya/MLOps-Project-Azure-End-to-End-Machine-Learning-Pipeline" target="_blank" class="btn-secondary">View on GitHub ↗</a>
+  </div>
+</section>
+
+<!-- STAT BAR -->
+<div class="stat-bar">
+  <div class="stat-item">
+    <div class="stat-num">6</div>
+    <div class="stat-label">AI modules</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">&lt;80ms</div>
+    <div class="stat-label">Fraud latency P95</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">360°</div>
+    <div class="stat-label">Customer view</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Hardcoded credentials</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Azure-native</div>
+  </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture">
+  <p class="section-label">Infrastructure</p>
+  <h2 class="section-title">Azure architecture</h2>
+  <p class="section-desc">End-to-end Azure-native infrastructure covering data ingestion, ML training, containerised serving, CI/CD automation, and enterprise-grade security.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="arch-icon blue">🗄️</div>
+      <div class="arch-title">Data layer</div>
+      <div class="arch-desc">Customer data, transactions, KYC documents, and account history ingested into ADLS Gen2 across raw, processed, and curated zones.</div>
+      <div class="arch-tags">
+        <span class="tag">ADLS Gen2</span><span class="tag">Azure Data Factory</span><span class="tag">Avro schemas</span>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon teal">🧠</div>
+      <div class="arch-title">ML platform</div>
+      <div class="arch-desc">Azure Machine Learning Workspace with MLflow tracking, AML Feature Store, model registry, and managed CPU/GPU compute clusters.</div>
+      <div class="arch-tags">
+        <span class="tag">AML Workspace</span><span class="tag">MLflow</span><span class="tag">Feature Store</span><span class="tag">GPU Clusters</span>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon amber">🔀</div>
+      <div class="arch-title">CI/CD</div>
+      <div class="arch-desc">Azure DevOps triggers training on merge to main. Champion vs challenger evaluation, blue/green deploy to AKS, manual approval gate before production.</div>
+      <div class="arch-tags">
+        <span class="tag">Azure DevOps</span><span class="tag">ACR</span><span class="tag">Blue/Green</span>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon purple">⚙️</div>
+      <div class="arch-title">Serving layer</div>
+      <div class="arch-desc">FastAPI inference server on AKS with horizontal pod autoscaling. AML Managed Online Endpoints for real-time. Batch endpoints for nightly scoring runs.</div>
+      <div class="arch-tags">
+        <span class="tag">AKS</span><span class="tag">HPA</span><span class="tag">AML Endpoints</span><span class="tag">Batch</span>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon coral">📡</div>
+      <div class="arch-title">Monitoring</div>
+      <div class="arch-desc">Azure Monitor and Application Insights capture latency, error rates, data drift, and custom ML metrics. Automated alerts trigger retraining workflows.</div>
+      <div class="arch-tags">
+        <span class="tag">Azure Monitor</span><span class="tag">App Insights</span><span class="tag">Drift Monitor</span>
+      </div>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon green">🔐</div>
+      <div class="arch-title">Security & identity</div>
+      <div class="arch-desc">Zero-credential architecture using Azure Managed Identity throughout. Azure Key Vault for all secrets with automated rotation policies and RBAC enforcement.</div>
+      <div class="arch-tags">
+        <span class="tag">Key Vault</span><span class="tag">Managed Identity</span><span class="tag">RBAC</span><span class="tag">Defender</span>
+      </div>
     </div>
   </div>
+</section>
 
-  <!-- OVERVIEW STATS -->
-  <div class="overview-grid">
-    <div class="overview-card">
-      <div class="icon"><i class="ti ti-users" aria-hidden="true"></i></div>
-      <div class="label">Customer Profiles</div>
-      <div class="value">360° AI View</div>
-    </div>
-    <div class="overview-card">
-      <div class="icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
-      <div class="label">Fraud Detection</div>
-      <div class="value">Real-time, &lt;100ms</div>
-    </div>
-    <div class="overview-card">
-      <div class="icon"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
-      <div class="label">Model Monitoring</div>
-      <div class="value">Drift + Retrain</div>
-    </div>
-    <div class="overview-card">
-      <div class="icon"><i class="ti ti-lock" aria-hidden="true"></i></div>
-      <div class="label">Security</div>
-      <div class="value">Zero hardcoded creds</div>
-    </div>
-  </div>
+<div class="divider"></div>
 
-  <!-- ARCHITECTURE -->
-  <h2 class="section-heading">🏗️ Azure architecture</h2>
-  <div class="arch-block">
-    <div class="arch-layer">
-      <div class="arch-layer-icon blue"><i class="ti ti-database" aria-hidden="true"></i></div>
-      <div class="arch-layer-content">
-        <div class="arch-layer-title">Data layer</div>
-        <div class="arch-layer-desc">Customer data, transaction logs, KYC documents, and account history ingested into ADLS Gen2 across raw, processed, and curated zones. Azure Data Factory handles ETL and schema enforcement.</div>
-        <div class="arch-layer-tags">
-          <span class="tag">ADLS Gen2</span><span class="tag">Azure Data Factory</span><span class="tag">Delta format</span><span class="tag">Avro schemas</span>
-        </div>
-      </div>
-    </div>
-    <div class="arch-layer">
-      <div class="arch-layer-icon teal"><i class="ti ti-brain" aria-hidden="true"></i></div>
-      <div class="arch-layer-content">
-        <div class="arch-layer-title">ML platform</div>
-        <div class="arch-layer-desc">Azure Machine Learning Workspace with MLflow experiment tracking, model registry, and managed compute clusters. Supports fraud, churn, credit scoring, and recommendation models running in parallel.</div>
-        <div class="arch-layer-tags">
-          <span class="tag">AML Workspace</span><span class="tag">MLflow</span><span class="tag">Model Registry</span><span class="tag">GPU Clusters</span>
-        </div>
-      </div>
-    </div>
-    <div class="arch-layer">
-      <div class="arch-layer-icon amber"><i class="ti ti-git-branch" aria-hidden="true"></i></div>
-      <div class="arch-layer-content">
-        <div class="arch-layer-title">CI/CD pipeline</div>
-        <div class="arch-layer-desc">Azure DevOps triggers training on PR merge to main. Full model evaluation against champion baseline, blue/green deploy to AKS, with manual approval gate before production promotion.</div>
-        <div class="arch-layer-tags">
-          <span class="tag">Azure DevOps</span><span class="tag">Azure Pipelines</span><span class="tag">ACR</span><span class="tag">Blue/Green deploy</span>
-        </div>
-      </div>
-    </div>
-    <div class="arch-layer">
-      <div class="arch-layer-icon purple"><i class="ti ti-server" aria-hidden="true"></i></div>
-      <div class="arch-layer-content">
-        <div class="arch-layer-title">Serving layer</div>
-        <div class="arch-layer-desc">FastAPI inference server containerized and deployed to AKS with horizontal pod autoscaling. AML Managed Online Endpoints serve real-time predictions. Batch endpoints handle nightly scoring runs.</div>
-        <div class="arch-layer-tags">
-          <span class="tag">AKS</span><span class="tag">HPA</span><span class="tag">AML Online Endpoints</span><span class="tag">Batch Endpoints</span>
-        </div>
-      </div>
-    </div>
-    <div class="arch-layer">
-      <div class="arch-layer-icon coral"><i class="ti ti-activity" aria-hidden="true"></i></div>
-      <div class="arch-layer-content">
-        <div class="arch-layer-title">Monitoring & security</div>
-        <div class="arch-layer-desc">Azure Monitor and Application Insights capture prediction latency, error rates, and custom ML metrics. Data drift triggers automated retraining. Azure Key Vault + Managed Identity for zero-credential architecture.</div>
-        <div class="arch-layer-tags">
-          <span class="tag">Azure Monitor</span><span class="tag">App Insights</span><span class="tag">Key Vault</span><span class="tag">Managed Identity</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- AI INTEGRATION IN BANKING -->
-  <h2 class="section-heading">🤖 AI integration — banking use cases</h2>
-  <p style="font-size:14px; color:var(--color-text-secondary); margin-bottom:1.25rem; line-height:1.7;">The following AI modules are deployed as independent ML services, each serving a distinct banking function with real-time and batch inference modes.</p>
+<!-- AI MODULES -->
+<section class="section" id="ai">
+  <p class="section-label">Intelligence</p>
+  <h2 class="section-title">AI integration — banking use cases</h2>
+  <p class="section-desc">Six AI modules deployed as independent ML services, each serving a distinct banking function with real-time and batch inference modes.</p>
 
   <div class="ai-grid">
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-shield-lock" aria-hidden="true"></i></div>
-      <div class="ai-title">Fraud detection</div>
-      <div class="ai-desc">Real-time transaction scoring using gradient boosting + graph neural networks. Flags suspicious patterns, card-not-present fraud, and account takeovers within a single API call.</div>
+      <div class="ai-card-icon">🛡️</div>
+      <div class="ai-card-title">Fraud detection</div>
+      <div class="ai-card-desc">Real-time transaction scoring using gradient boosting and graph neural networks. Flags card-not-present fraud, account takeovers, and structured anomalies within a single inference call.</div>
       <span class="ai-metric teal">latency &lt;80ms</span>
     </div>
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-user-check" aria-hidden="true"></i></div>
-      <div class="ai-title">Credit risk scoring</div>
-      <div class="ai-desc">ML-powered credit decisioning using transactional behavior, account history, and bureau data. Produces risk scores and explainable feature breakdowns via SHAP values for regulatory compliance.</div>
+      <div class="ai-card-icon">📊</div>
+      <div class="ai-card-title">Credit risk scoring</div>
+      <div class="ai-card-desc">ML-powered credit decisioning combining transactional behaviour, account history, and bureau data. Produces risk scores with SHAP value breakdowns for regulatory explainability.</div>
       <span class="ai-metric blue">SHAP explainability</span>
     </div>
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
-      <div class="ai-title">Customer churn prediction</div>
-      <div class="ai-desc">Identifies customers at risk of leaving using engagement signals, product usage, and lifecycle stage. Powers proactive retention campaigns triggered via Azure Logic Apps.</div>
+      <div class="ai-card-icon">👤</div>
+      <div class="ai-card-title">Customer churn prediction</div>
+      <div class="ai-card-desc">Identifies customers at risk of leaving using engagement signals, product usage patterns, and lifecycle stage features. Triggers proactive retention campaigns via Azure Logic Apps.</div>
       <span class="ai-metric amber">30-day horizon</span>
     </div>
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-bulb" aria-hidden="true"></i></div>
-      <div class="ai-title">Product recommendations</div>
-      <div class="ai-desc">Collaborative filtering + content-based models suggest relevant banking products — savings accounts, loans, insurance — personalized to each customer's financial profile and life events.</div>
+      <div class="ai-card-icon">💡</div>
+      <div class="ai-card-title">Product recommendations</div>
+      <div class="ai-card-desc">Collaborative filtering and content-based models surface relevant banking products personalised to each customer's financial profile and life events.</div>
       <span class="ai-metric purple">360° customer view</span>
     </div>
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-file-analytics" aria-hidden="true"></i></div>
-      <div class="ai-title">AML / compliance</div>
-      <div class="ai-desc">Anti-money laundering model monitors transaction networks for structuring, layering, and integration patterns. Generates Suspicious Activity Reports (SARs) with supporting evidence chains.</div>
+      <div class="ai-card-icon">🔍</div>
+      <div class="ai-card-title">AML / compliance</div>
+      <div class="ai-card-desc">Anti-money laundering model monitors transaction networks for structuring and layering patterns. Auto-generates SAR drafts with supporting evidence chains via Azure OpenAI.</div>
       <span class="ai-metric coral">SAR auto-draft</span>
     </div>
     <div class="ai-card">
-      <div class="ai-icon"><i class="ti ti-message-chatbot" aria-hidden="true"></i></div>
-      <div class="ai-title">AI banker assistant</div>
-      <div class="ai-desc">LLM-powered internal assistant for relationship managers — retrieves customer 360 summaries, flags risk signals, and drafts communication templates using Azure OpenAI Service.</div>
-      <span class="ai-metric blue">Azure OpenAI</span>
+      <div class="ai-card-icon">🤝</div>
+      <div class="ai-card-title">AI banker assistant</div>
+      <div class="ai-card-desc">LLM-powered internal assistant for relationship managers. Retrieves customer 360 summaries, flags risk signals, and drafts communication templates using GPT-4o.</div>
+      <span class="ai-metric green">Azure OpenAI</span>
     </div>
   </div>
 
-  <div class="info-box teal-box">
-    <strong style="font-weight:500; color:var(--color-text-primary);">How AI transforms bank operations:</strong> AI integration reduces manual review load on fraud teams by automating first-pass triage, improves credit decision consistency, and enables personalized banking at scale. Regulatory models produce audit-ready evidence trails, reducing compliance overhead while improving detection rates across all financial crime typologies.
+  <div class="info-box teal" style="margin-top:2rem;">
+    <strong>How AI transforms bank operations:</strong> AI integration reduces manual review burden on fraud and compliance teams by automating first-pass triage, improves credit decision consistency, and enables personalised banking at scale. All models produce audit-ready evidence trails, reducing compliance overhead while improving detection across financial crime typologies.
   </div>
+</section>
 
-  <!-- CUSTOMER INTELLIGENCE MODULE -->
-  <h2 class="section-heading">👤 Customer intelligence module</h2>
-  <p style="font-size:14px; color:var(--color-text-secondary); margin-bottom:1rem; line-height:1.7;">The customer intelligence layer aggregates data from core banking, CRM, and digital channels into a unified feature store, powering all downstream ML models.</p>
+<div class="divider"></div>
 
-  <div class="code-block"><span class="cm"># src/customers/feature_store.py</span>
-<span class="kw">from</span> azure.ai.ml <span class="kw">import</span> MLClient
-<span class="kw">from</span> azure.ai.ml.entities <span class="kw">import</span> FeatureStore, FeatureSet
+<!-- CI/CD PIPELINE -->
+<section class="section" id="pipeline">
+  <p class="section-label">Automation</p>
+  <h2 class="section-title">CI/CD — Azure DevOps pipeline</h2>
+  <p class="section-desc">From developer push to production blue/green deployment — fully automated with champion vs challenger model evaluation and manual approval gates.</p>
 
-<span class="cm"># Customer 360 feature set definition</span>
-customer_features = FeatureSet(
-    name=<span class="str">"customer_360"</span>,
-    version=<span class="str">"2"</span>,
-    features=[
-        <span class="str">"avg_monthly_balance"</span>, <span class="str">"txn_velocity_7d"</span>,
-        <span class="str">"product_count"</span>, <span class="str">"days_since_login"</span>,
-        <span class="str">"credit_utilization"</span>, <span class="str">"kyc_score"</span>,
-        <span class="str">"churn_risk_score"</span>, <span class="str">"lifetime_value_segment"</span>
-    ],
-    source=<span class="str">"azureml://datastores/adls_datastore/paths/curated/customers/"</span>
-)
-ml_client.feature_sets.create_or_update(customer_features)</div>
-
-  <h3 class="sub-heading">Banking data entities</h3>
-  <table class="stack-table">
-    <thead>
-      <tr><th>Entity</th><th>Source</th><th>Update frequency</th><th>Primary use</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Customer profile</td><td>Core banking + CRM</td><td>Real-time CDC</td><td>Churn, recommendations, AML</td></tr>
-      <tr><td>Transaction history</td><td>Payment processor</td><td>Real-time stream</td><td>Fraud, AML, credit scoring</td></tr>
-      <tr><td>Account details</td><td>Core banking ledger</td><td>Daily batch</td><td>Credit risk, product fit</td></tr>
-      <tr><td>KYC / onboarding</td><td>Digital onboarding app</td><td>Event-driven</td><td>Compliance, risk scoring</td></tr>
-      <tr><td>Behavioural signals</td><td>App/web clickstream</td><td>Near real-time</td><td>Churn prediction, engagement</td></tr>
-      <tr><td>Bureau data</td><td>Credit bureau API</td><td>On demand (pull)</td><td>Credit underwriting</td></tr>
-    </tbody>
-  </table>
-
-  <!-- CI/CD PIPELINE -->
-  <h2 class="section-heading">🔄 CI/CD — Azure DevOps pipeline</h2>
-  <div class="pipeline-steps">
+  <div class="pipeline">
     <div class="pipeline-step">
       <div class="step-num">1</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">Developer push to feature branch</div>
         <div class="step-desc">Code pushed to Azure Repos triggers CI automatically. Runs flake8, black, isort, mypy, and pytest across unit and integration test suites.</div>
       </div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">2</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">Docker build + push to ACR</div>
-        <div class="step-desc">FastAPI inference image built and pushed to Azure Container Registry. AML environment registered with updated dependencies.</div>
+        <div class="step-desc">FastAPI inference image built and pushed to Azure Container Registry. AML environment registered with updated dependencies and version hash.</div>
       </div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">3</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">AML training pipeline triggered (on merge to main)</div>
-        <div class="step-desc">Challenger model trained on latest curated dataset. Metrics logged to MLflow — accuracy, AUC, F1, KS statistic, and Gini coefficient for credit models.</div>
+        <div class="step-desc">Challenger model trained on latest curated dataset. Metrics logged to MLflow — AUC, F1, KS statistic, Gini coefficient, and fairness scores.</div>
       </div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">4</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">Champion vs challenger evaluation</div>
-        <div class="step-desc">Challenger compared against production champion. Promotion blocked if challenger fails to exceed champion AUC by threshold or fails fairness checks.</div>
+        <div class="step-desc">Challenger compared against production champion. Promotion blocked if challenger fails to exceed champion AUC threshold or fails fairness and bias checks.</div>
       </div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">5</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">Staging deployment + smoke tests</div>
-        <div class="step-desc">Challenger deployed to AKS staging namespace. Smoke tests fire synthetic transactions and verify prediction latency, schema, and edge case handling.</div>
+        <div class="step-desc">Challenger deployed to AKS staging namespace. Smoke tests fire synthetic transactions and verify prediction latency, schema correctness, and edge case handling.</div>
       </div>
     </div>
     <div class="pipeline-step">
       <div class="step-num">6</div>
-      <div class="step-content">
+      <div>
         <div class="step-title">Manual approval gate → production blue/green</div>
-        <div class="step-desc">ML lead approves promotion in Azure DevOps. Blue/green swap on AKS production with instant rollback capability. Model registered in AML Model Registry with full lineage.</div>
+        <div class="step-desc">ML lead approves promotion in Azure DevOps. Blue/green swap on AKS production with instant rollback capability. Model registered in AML Registry with full lineage.</div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- API ENDPOINTS -->
-  <h2 class="section-heading">🔌 API endpoints</h2>
+<div class="divider"></div>
+
+<!-- API ENDPOINTS -->
+<section class="section" id="api">
+  <p class="section-label">Integration</p>
+  <h2 class="section-title">API endpoints</h2>
+  <p class="section-desc">FastAPI inference server deployed on AKS, exposing dedicated endpoints per AI module with Pydantic schema validation and App Insights telemetry.</p>
+
   <div class="endpoint-grid">
     <div class="endpoint-card">
-      <span class="endpoint-method method-post">POST</span>
-      <div class="endpoint-path">/v1/fraud/score</div>
-      <div class="endpoint-desc">Real-time transaction fraud scoring</div>
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/v1/fraud/score</div>
+      <div class="ep-desc">Real-time transaction fraud scoring</div>
     </div>
     <div class="endpoint-card">
-      <span class="endpoint-method method-post">POST</span>
-      <div class="endpoint-path">/v1/credit/score</div>
-      <div class="endpoint-desc">Credit risk assessment with SHAP</div>
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/v1/credit/score</div>
+      <div class="ep-desc">Credit risk assessment with SHAP</div>
     </div>
     <div class="endpoint-card">
-      <span class="endpoint-method method-get">GET</span>
-      <div class="endpoint-path">/v1/customer/{id}/profile</div>
-      <div class="endpoint-desc">Customer 360 enriched profile</div>
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/v1/customer/{id}/profile</div>
+      <div class="ep-desc">Customer 360 enriched profile</div>
     </div>
     <div class="endpoint-card">
-      <span class="endpoint-method method-post">POST</span>
-      <div class="endpoint-path">/v1/churn/predict</div>
-      <div class="endpoint-desc">Churn probability + retention signals</div>
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/v1/churn/predict</div>
+      <div class="ep-desc">Churn probability + retention signals</div>
     </div>
     <div class="endpoint-card">
-      <span class="endpoint-method method-get">GET</span>
-      <div class="endpoint-path">/v1/recommend/{id}</div>
-      <div class="endpoint-desc">Personalised product recommendations</div>
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/v1/recommend/{id}</div>
+      <div class="ep-desc">Personalised product recommendations</div>
     </div>
     <div class="endpoint-card">
-      <span class="endpoint-method method-get">GET</span>
-      <div class="endpoint-path">/health</div>
-      <div class="endpoint-desc">Liveness + readiness probe</div>
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/v1/aml/flag</div>
+      <div class="ep-desc">AML transaction network check</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/health</div>
+      <div class="ep-desc">Liveness + readiness probe</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/metrics</div>
+      <div class="ep-desc">Prometheus-format ML metrics</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/model/info</div>
+      <div class="ep-desc">Active model versions + metadata</div>
     </div>
   </div>
+</section>
 
-  <!-- TECH STACK -->
-  <h2 class="section-heading">⚙️ Azure tech stack</h2>
+<div class="divider"></div>
+
+<!-- TECH STACK -->
+<section class="section">
+  <p class="section-label">Stack</p>
+  <h2 class="section-title">Azure tech stack</h2>
+  <p class="section-desc">Every layer of the platform uses Azure-native services, enabling unified identity, billing, monitoring, and compliance management.</p>
+
   <table class="stack-table">
     <thead>
       <tr><th>Layer</th><th>Service / tool</th><th>Purpose</th></tr>
     </thead>
     <tbody>
-      <tr><td class="layer-label">Source control</td><td>Azure DevOps Repos / GitHub</td><td>Versioned code, branch policies</td></tr>
-      <tr><td class="layer-label">CI/CD</td><td>Azure DevOps Pipelines</td><td>Automated build, test, deploy</td></tr>
-      <tr><td class="layer-label">ML platform</td><td>Azure Machine Learning</td><td>Training, tracking, registry</td></tr>
-      <tr><td class="layer-label">Experiment tracking</td><td>MLflow on AML</td><td>Metrics, params, artifacts per run</td></tr>
-      <tr><td class="layer-label">Data storage</td><td>ADLS Gen2</td><td>Raw / processed / curated zones</td></tr>
-      <tr><td class="layer-label">ETL</td><td>Azure Data Factory</td><td>Ingestion, transformation, lineage</td></tr>
-      <tr><td class="layer-label">Feature store</td><td>AML Feature Store</td><td>Shared, versioned feature sets</td></tr>
-      <tr><td class="layer-label">Containerisation</td><td>Docker → ACR</td><td>Reproducible inference images</td></tr>
-      <tr><td class="layer-label">Serving (online)</td><td>AKS + AML Managed Endpoint</td><td>Real-time, autoscaled inference</td></tr>
-      <tr><td class="layer-label">Serving (batch)</td><td>AML Batch Endpoint</td><td>Nightly scoring, bulk predictions</td></tr>
-      <tr><td class="layer-label">LLM integration</td><td>Azure OpenAI Service</td><td>AI banker assistant, SAR drafts</td></tr>
-      <tr><td class="layer-label">Monitoring</td><td>Azure Monitor + App Insights</td><td>Latency, drift, error alerts</td></tr>
-      <tr><td class="layer-label">Secret management</td><td>Azure Key Vault</td><td>All credentials at runtime</td></tr>
-      <tr><td class="layer-label">IaC</td><td>Azure Bicep</td><td>Reproducible infra provisioning</td></tr>
-      <tr><td class="layer-label">Identity</td><td>Azure AD + Managed Identity</td><td>Zero-credential architecture</td></tr>
+      <tr><td>Source control</td><td>Azure DevOps Repos / GitHub</td><td>Versioned code, branch policies</td></tr>
+      <tr><td>CI/CD</td><td>Azure DevOps Pipelines</td><td>Automated build, test, deploy</td></tr>
+      <tr><td>ML platform</td><td>Azure Machine Learning</td><td>Training, tracking, registry</td></tr>
+      <tr><td>Experiment tracking</td><td>MLflow on AML</td><td>Metrics, params, artifacts per run</td></tr>
+      <tr><td>Data storage</td><td>ADLS Gen2</td><td>Raw / processed / curated zones</td></tr>
+      <tr><td>ETL</td><td>Azure Data Factory</td><td>Ingestion, transformation, lineage</td></tr>
+      <tr><td>Feature store</td><td>AML Feature Store</td><td>Shared, versioned feature sets</td></tr>
+      <tr><td>Containerisation</td><td>Docker → ACR</td><td>Reproducible inference images</td></tr>
+      <tr><td>Serving (online)</td><td>AKS + AML Managed Endpoint</td><td>Real-time, autoscaled inference</td></tr>
+      <tr><td>Serving (batch)</td><td>AML Batch Endpoint</td><td>Nightly scoring, bulk predictions</td></tr>
+      <tr><td>LLM integration</td><td>Azure OpenAI Service (GPT-4o)</td><td>AI banker assistant, SAR drafts</td></tr>
+      <tr><td>Monitoring</td><td>Azure Monitor + App Insights</td><td>Latency, drift, error alerts</td></tr>
+      <tr><td>Secret management</td><td>Azure Key Vault</td><td>All credentials at runtime</td></tr>
+      <tr><td>IaC</td><td>Azure Bicep</td><td>Reproducible infra provisioning</td></tr>
+      <tr><td>Identity</td><td>Azure AD + Managed Identity</td><td>Zero-credential architecture</td></tr>
     </tbody>
   </table>
+</section>
 
-  <!-- SECURITY -->
-  <h2 class="section-heading">🔐 Security & identity</h2>
-  <p style="font-size:14px; color:var(--color-text-secondary); margin-bottom:1rem; line-height:1.7;">All service-to-service communication uses Azure Managed Identity. No credentials are stored in code, config files, or environment variables. Secrets rotate automatically via Key Vault rotation policies.</p>
+<div class="divider"></div>
 
-  <div class="security-grid">
-    <div class="security-item">
-      <div class="s-role">AML Workspace</div>
-      <div class="s-name">→ ADLS Gen2</div>
-      <div class="s-access">Storage Blob Data Contributor</div>
-    </div>
-    <div class="security-item">
-      <div class="s-role">AML Workspace</div>
-      <div class="s-name">→ ACR</div>
-      <div class="s-access">AcrPull (Managed Identity)</div>
-    </div>
-    <div class="security-item">
-      <div class="s-role">AKS</div>
-      <div class="s-name">→ ACR</div>
-      <div class="s-access">AcrPull (AKS Identity)</div>
-    </div>
-    <div class="security-item">
-      <div class="s-role">App</div>
-      <div class="s-name">→ Key Vault</div>
-      <div class="s-access">Key Vault Secrets User</div>
-    </div>
-    <div class="security-item">
-      <div class="s-role">DevOps Pipeline</div>
-      <div class="s-name">→ Azure</div>
-      <div class="s-access">Service Principal (scoped RBAC)</div>
-    </div>
-    <div class="security-item">
-      <div class="s-role">Banking APIs</div>
-      <div class="s-name">→ Backend</div>
-      <div class="s-access">Azure API Management + OAuth2</div>
-    </div>
-  </div>
+<!-- GETTING STARTED -->
+<section class="section" id="start">
+  <p class="section-label">Setup</p>
+  <h2 class="section-title">Getting started</h2>
+  <p class="section-desc">Prerequisites: Python 3.11+, Azure CLI with ML extension, Docker, kubectl, and Make.</p>
 
-  <div class="info-box amber-box">
-    <strong style="font-weight:500; color:var(--color-text-primary);">Regulatory compliance note:</strong> All prediction logs, model versions, and data lineage are retained with immutable audit trails in ADLS Gen2 (WORM policy). SHAP explanations are stored per decision for credit models to satisfy RBI / Basel III explainability requirements. Data residency is enforced at the Azure subscription level.
-  </div>
-
-  <!-- GETTING STARTED -->
-  <h2 class="section-heading">🚀 Getting started</h2>
-  <h3 class="sub-heading">Prerequisites</h3>
-  <div class="code-block"><span class="cm"># Required tools</span>
-Python 3.11+
-Azure CLI          az extension add -n ml
-Docker
-kubectl
-Make (optional)   </div>
-
-  <h3 class="sub-heading">1. Clone and configure</h3>
-  <div class="code-block">git clone https://dev.azure.com/your-org/bankcore-mlops/_git/bankcore-mlops
+  <div class="steps-inline">
+    <div class="start-step">
+      <div class="start-num">01</div>
+      <div>
+        <div class="start-title">Clone and configure</div>
+        <div class="start-desc">Clone the repo and copy the environment template.</div>
+        <div class="code-block">git clone https://dev.azure.com/your-org/bankcore-mlops/_git/bankcore-mlops
 cd bankcore-mlops
-
-cp .env.example .env
-<span class="cm"># Fill in your Azure subscription details</span></div>
-
-  <h3 class="sub-heading">2. Provision infrastructure</h3>
-  <div class="code-block">az deployment group create \
+cp .env.example .env</div>
+      </div>
+    </div>
+    <div class="start-step">
+      <div class="start-num">02</div>
+      <div>
+        <div class="start-title">Provision Azure infrastructure</div>
+        <div class="start-desc">Deploy all Azure resources via Bicep — AML Workspace, ADLS Gen2, ACR, AKS, Key Vault, App Insights, Azure OpenAI.</div>
+        <div class="code-block">az login
+az deployment group create \
   --resource-group rg-bankcore-dev \
   --template-file infra/main.bicep \
   --parameters infra/parameters/dev.parameters.json</div>
-
-  <h3 class="sub-heading">3. Submit a training job</h3>
-  <div class="code-block"><span class="cm"># Fraud detection model — AML pipeline</span>
-az ml job create \
+      </div>
+    </div>
+    <div class="start-step">
+      <div class="start-num">03</div>
+      <div>
+        <div class="start-title">Submit a training job</div>
+        <div class="start-desc">Train the fraud detection model on the AML compute cluster.</div>
+        <div class="code-block">az ml job create \
   --file src/pipelines/fraud_training_pipeline.yml \
   --workspace-name aml-bankcore-dev \
-  --resource-group rg-bankcore-dev
-
-<span class="cm"># Or Python SDK v2</span>
-python src/pipelines/fraud_training_pipeline.py</div>
-
-  <h3 class="sub-heading">4. Deploy to AKS</h3>
-  <div class="code-block">az aks get-credentials --resource-group rg-bankcore-dev --name aks-bankcore-dev
-
+  --resource-group rg-bankcore-dev</div>
+      </div>
+    </div>
+    <div class="start-step">
+      <div class="start-num">04</div>
+      <div>
+        <div class="start-title">Deploy to AKS</div>
+        <div class="start-desc">Get AKS credentials and apply Kubernetes manifests.</div>
+        <div class="code-block">az aks get-credentials --resource-group rg-bankcore-dev --name aks-bankcore-dev
 kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/hpa.yaml
-
 kubectl get pods -n bankcore</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- MONITORING -->
-  <h2 class="section-heading">📈 Monitoring & alerts</h2>
-  <table class="stack-table">
+<div class="divider"></div>
+
+<!-- MONITORING -->
+<section class="section">
+  <p class="section-label">Observability</p>
+  <h2 class="section-title">Monitoring & alerts</h2>
+  <p class="section-desc">Azure Monitor and Application Insights provide end-to-end observability across inference latency, model drift, data quality, and infrastructure health.</p>
+
+  <table class="mon-table">
     <thead>
       <tr><th>Signal</th><th>Tool</th><th>Alert threshold</th></tr>
     </thead>
     <tbody>
-      <tr><td>Fraud model P95 latency</td><td>Application Insights</td><td>&gt;100ms → Warning</td></tr>
-      <tr><td>HTTP error rate</td><td>Application Insights</td><td>&gt;1% → Critical</td></tr>
-      <tr><td>Fraud feature drift</td><td>AML Data Drift Monitor</td><td>Score &gt;0.3 → Retrain trigger</td></tr>
-      <tr><td>Credit model AUC degradation</td><td>AML Model Monitor</td><td>&lt;0.02 drop → Alert</td></tr>
-      <tr><td>AKS node CPU</td><td>Azure Monitor for Containers</td><td>&gt;80% → Scale-out</td></tr>
-      <tr><td>Key Vault access anomaly</td><td>Microsoft Defender for Cloud</td><td>Any anomaly → Immediate</td></tr>
+      <tr><td>Fraud model P95 latency</td><td>Application Insights</td><td><span class="alert-warn">&gt;100ms → Warning</span></td></tr>
+      <tr><td>HTTP error rate</td><td>Application Insights</td><td><span class="alert-crit">&gt;1% → Critical</span></td></tr>
+      <tr><td>Fraud feature drift</td><td>AML Data Drift Monitor</td><td><span class="alert-warn">Score &gt;0.3 → Retrain</span></td></tr>
+      <tr><td>Credit model AUC degradation</td><td>AML Model Monitor</td><td><span class="alert-warn">Drop &gt;0.02 → Alert</span></td></tr>
+      <tr><td>AKS node CPU</td><td>Azure Monitor for Containers</td><td><span class="alert-info">&gt;80% → Scale-out</span></td></tr>
+      <tr><td>Key Vault access anomaly</td><td>Microsoft Defender for Cloud</td><td><span class="alert-crit">Any anomaly → Immediate</span></td></tr>
     </tbody>
   </table>
 
-  <div class="divider"></div>
+  <div class="info-box amber" style="margin-top:1.5rem;">
+    <strong>Regulatory compliance:</strong> All prediction logs and data lineage are retained with immutable audit trails (WORM policy on ADLS Gen2). SHAP explanations are stored per credit decision for RBI / Basel III explainability requirements. Data residency is enforced at the Azure subscription level.
+  </div>
+</section>
 
-  <p class="footer-note">"Azure ML + AKS + AI — the enterprise backbone for banking intelligence that ships safely, scales reliably, and stays auditable."</p>
-</div>
+<!-- FOOTER -->
+<footer>
+  "Azure ML + AKS + AI — the enterprise backbone for banking intelligence that ships safely, scales reliably, and stays auditable."
+  <br><br>
+  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; font-style:normal;">
+    MIT License &nbsp;·&nbsp;
+    <a href="https://github.com/2209aditya/MLOps-Project-Azure-End-to-End-Machine-Learning-Pipeline" target="_blank" style="color:var(--text3); text-decoration:none;">GitHub ↗</a>
+  </span>
+</footer>
+
+</body>
+</html>
