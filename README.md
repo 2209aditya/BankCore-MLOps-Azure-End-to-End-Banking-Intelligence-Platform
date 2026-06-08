@@ -1,5 +1,6 @@
 # 🏦 BankCore MLOps — Azure End-to-End Banking Intelligence Platform
 
+
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![Azure ML](https://img.shields.io/badge/Azure-Machine%20Learning-0078D4)
 ![AKS](https://img.shields.io/badge/Azure-AKS-0078D4)
@@ -9,7 +10,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
-
+[![View Interactive README](https://img.shields.io/badge/View-Interactive%20README-0078D4?style=for-the-badge&logo=microsoftazure)](https://2209aditya.github.io/BankCore-MLOps-Azure-End-to-End-Banking-Intelligence-Platform)
 ## 📌 Overview
 
 A production-grade MLOps platform purpose-built for banking — covering customer intelligence, real-time fraud detection, credit risk scoring, churn prediction, and regulatory compliance. Built entirely on Azure-native services with enterprise security, full auditability, and AI-powered decisioning at its core.
