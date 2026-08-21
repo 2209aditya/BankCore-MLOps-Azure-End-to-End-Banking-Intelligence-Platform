@@ -174,7 +174,7 @@ Real-time transaction scoring using gradient boosting and graph neural networks.
 ML-powered credit decisioning combining transactional behaviour, account history, and bureau data. Produces risk scores with SHAP value breakdowns for regulatory explainability.
 
 - **Output:** Risk score + feature importance (SHAP)
-- **Compliance:** Explainable decisions for RBI / Basel III requirements
+- **Compliance:** Explainable decisions for RBI / Basel III requiremens
 - **Audit trail:** All decisions logged immutably to ADLS Gen2
 
 ### 3. 👤 Customer Churn Prediction
