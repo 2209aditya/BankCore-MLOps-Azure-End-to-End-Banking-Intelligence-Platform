@@ -1,0 +1,13 @@
+model:
+  name: credit-risk
+  algorithm: random-forest
+
+training:
+  test_size: 0.2
+  random_state: 42
+
+explainability:
+  shap_enabled: true
+
+monitoring:
+  auc_drop_threshold: 0.02

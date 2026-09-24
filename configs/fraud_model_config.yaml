@@ -1,0 +1,15 @@
+model:
+  name: fraud-detection
+  algorithm: xgboost
+
+training:
+  test_size: 0.2
+  random_state: 42
+
+thresholds:
+  fraud_probability: 0.5
+
+monitoring:
+  p95_latency_ms: 100
+  error_rate_percent: 1
+  feature_drift: 0.3
